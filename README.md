@@ -1,4 +1,4 @@
-# Decision-Making at Crossroad based on [POMDP](https://en.wikipedia.org/wiki/Partially_observable_Markov_decision_process) and [IDM](https://en.wikipedia.org/wiki/Intelligent_driver_model) Model.
+# Decision-Making based on [POMDP](https://en.wikipedia.org/wiki/Partially_observable_Markov_decision_process) and [IDM](https://en.wikipedia.org/wiki/Intelligent_driver_model) Model.
 ### Preparation:  
 - Please run [**INSTALL.jl**](./INSTALL.jl) once to install the needed julia packages.  
 - In Julia-REPL mode, press key "]" to enter Pkg mode, add and activate this package:
