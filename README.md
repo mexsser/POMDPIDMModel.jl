@@ -1,17 +1,21 @@
-# POMDPModel
+# Decision-Making at Crossroad based on [POMDP](https://en.wikipedia.org/wiki/Partially_observable_Markov_decision_process) and [IDM](https://en.wikipedia.org/wiki/Intelligent_driver_model) Model.
 ### Preparation:  
-- Please run [**_INSTALL.jl_**](./INSTALL.jl) once to install the needed julia packages.  
-- Please include the root folder of this repo in julia search paths in order to use the local package "**Geo**". To do this, add
+- Please run [**INSTALL.jl**](./INSTALL.jl) once to install the needed julia packages.  
+- In Julia-REPL mode, press key "]" to enter Pkg mode, add and activate this package:
 ```julia
-push!(LOAD_PATH, "Path/Of/Repo")
+(v1.0) pkg> add https://github.com/mexsser/Geo.jl
+(v1.0) pkg> activate .
+(v1.0) pkg> instantiate
 ```
-at the end of the file _**~/.julia/config/startup.jl**_
-- in order to use a faster solver **_SparseValueIterationSolver_** in Pkg "**DiscreteValueIteration**", which is a dependency of QMDP Solver, two funcitons should be modified. To locate the package source folder, type the following command in julia REPL:
+### Run Test
+- in Julia-REPL mode, press key ";" to enter shell mode, change directory to **POMDPIDMModel/test/**, then go back to REPL and type
 ```julia
-dirname(pathof(DiscreteValueIteration))
+julia> include("runtests.jl")
 ```
-then change the argument type of function **_transition_matrix_a_s_sp(mdp::MDP)_** and **_reward_s_a(mdp::MDP)_** from "**MDP**" to "**Union{MDP,POMDP}**" in **_DiscreteValueIteration/src/sparse.jl_**  
-
+- Or you can simply type the following command in terminal after changing directory to **POMDPIDMModel/test/**
+```bash
+$ julia --color=yes -i -O -- runtests.jl
+```
 ### Dependencies:
 - Julia v1.0  
 - ffmpeg
