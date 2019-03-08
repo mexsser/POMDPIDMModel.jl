@@ -18,8 +18,8 @@ then change the argument type of function **_transition_matrix_a_s_sp(mdp::MDP)_
 - python
 - matplotlib
 #
-![Crossroad](output/Crossroad.R1R3.Passive.gif)
+![Crossroad](test/output/Crossroad.R1R3.Passive.gif)
 #
-![TJunction](output/TJunction.R1R3.Passive.gif)
+![TJunction](test/output/TJunction.R1R3.Passive.gif)
 #
-![TJunction](output/TJunction.R1R2.Passive.gif)
+![TJunction](test/output/TJunction.R1R2.Passive.gif)
