@@ -8,6 +8,10 @@ julia:
 notifications:
   email: false
 
-  after_success:
-    - julia -e 'import POMDPIDMModel; cd(joinpath(dirname(pathof(POMDPIDMModel)), "..", "test"))';
-    - julia --color=yes -i -O -- runtests.jl
+before_install:
+  - git clone https://github.com/mexsser/POMDPIDMModel.jl
+  - julia --color=yes -i -O -- POMDPIDMModel/deps/build.jl
+
+after_success:
+  - julia -e 'import POMDPIDMModel; cd(joinpath(dirname(pathof(POMDPIDMModel)), "..", "test"))';
+  - julia --color=yes -i -O -- runtests.jl
