@@ -1,3 +1,13 @@
 language: julia
+os:
+  - linux
+
 julia:
   - 1.0.1
+
+notifications:
+  email: false
+
+  after_success:
+    - julia -e 'import POMDPIDMModel; cd(joinpath(dirname(pathof(POMDPIDMModel)), "..", "test"))';
+    - julia --color=yes -i -O -- runtests.jl

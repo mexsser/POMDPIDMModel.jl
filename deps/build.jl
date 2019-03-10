@@ -1,6 +1,6 @@
 # install dependencies
 
-import Pkg
+using Pkg
 
 Pkg.add("Random")
 Pkg.add("Distributions")
