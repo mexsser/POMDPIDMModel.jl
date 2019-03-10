@@ -9,8 +9,9 @@ notifications:
   email: false
 
 before_install:
-  - git clone https://github.com/mexsser/POMDPIDMModel.jl
-  - pwd
+  - git clone https://github.com/mexsser/POMDPIDMModel.jl POMDPIDMModel && cd "$_"
+
+before_script:
   - julia --color=yes -i -O -- deps/build.jl
 
 after_success:
