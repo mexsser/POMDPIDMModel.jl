@@ -10,7 +10,8 @@ notifications:
 
 before_install:
   - git clone https://github.com/mexsser/POMDPIDMModel.jl
-  - julia --color=yes -i -O -- POMDPIDMModel/deps/build.jl
+  - pwd
+  - julia --color=yes -i -O -- deps/build.jl
 
 after_success:
   - julia -e 'import POMDPIDMModel; cd(joinpath(dirname(pathof(POMDPIDMModel)), "..", "test"))';
