@@ -1,6 +1,6 @@
 # Decision-Making based on [POMDP](https://en.wikipedia.org/wiki/Partially_observable_Markov_decision_process) and [IDM](https://en.wikipedia.org/wiki/Intelligent_driver_model) Model.
-### Preparation:  
-- Please download and run [**build.jl**](deps/build.jl) once to install the needed julia packages:
+### Installation:  
+- Please download and run [**build.jl**](deps/build.jl) in terminal once to install the needed julia packages:
 ```bash
 $ julia build.jl
 ```
