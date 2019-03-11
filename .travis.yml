@@ -22,10 +22,13 @@ before_install:
   - sudo apt-get install ffmpeg qt5-default
   - curl https://bootstrap.pypa.io/get-pip.py | sudo -H python3.6
   - sudo pip3 install matplotlib
-  #- git clone https://github.com/mexsser/POMDPIDMModel.jl POMDPIDMModel && cd "$_"
+  - git clone https://github.com/mexsser/POMDPIDMModel.jl POMDPIDMModel && cd "$_"
 
 install:
-  #- julia --color=yes -i -O -- deps/build.jl
+  - julia --color=yes -i -O -- deps/build.jl
+
+script:
+  - julia -e 'using Pkg; Pkg.add(PackageSpec(url = "https://github.com/mexsser/POMDPIDMModel.jl"))'
 
 after_success:
   - julia -e 'import POMDPIDMModel; cd(joinpath(dirname(pathof(POMDPIDMModel)), "..", "test"))';
