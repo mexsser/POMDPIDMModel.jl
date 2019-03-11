@@ -18,7 +18,7 @@ Pkg.add("BeliefUpdaters")
 Pkg.add(PackageSpec(url = "https://github.com/mexsser/DiscreteValueIteration.jl"))
 Pkg.add("QMDP")
 
-Pkg.develop(PackageSpec(url = "https://github.com/mexsser/Geo.jl"))
+Pkg.add(PackageSpec(url = "https://github.com/mexsser/Geo.jl"))
 Pkg.add("Plots")
 Pkg.add("Distributed")
 Pkg.add("Measures")
