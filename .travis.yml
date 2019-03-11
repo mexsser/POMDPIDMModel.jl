@@ -19,6 +19,8 @@ addons:
 
 addons:
   apt:
+    sources:
+      - sourceline: 'ppa:deadsnakes/ppa'
     packages:
       - "python3.6"
       - "python3-pip"
