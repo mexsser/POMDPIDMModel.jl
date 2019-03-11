@@ -24,11 +24,10 @@ before_install:
   - sudo pip3 install matplotlib
   - git clone https://github.com/mexsser/POMDPIDMModel.jl POMDPIDMModel && cd "$_"
 
-install:
-  - rm -rf ~/.julia/*
-  - julia --color=yes -i -- deps/build.jl
+#install:
 
 script:
+  - julia -e 'include("deps/build.jl")'
   - julia -e 'using Pkg; Pkg.add(PackageSpec(url = "https://github.com/mexsser/POMDPIDMModel.jl"))'
 
 after_success:
