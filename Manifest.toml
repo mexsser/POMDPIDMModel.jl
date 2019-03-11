@@ -271,9 +271,11 @@ version = "1.90.0"
 
 [[QMDP]]
 deps = ["DiscreteValueIteration", "POMDPPolicies", "POMDPs", "Random"]
-git-tree-sha1 = "bdc6a6589d4681aceb07608ca6c9e64cfba49ed1"
+git-tree-sha1 = "a148399096463e9aa3cdd59c1deedfd6e623f459"
+repo-rev = "master"
+repo-url = "https://github.com/JuliaPOMDP/QMDP.jl"
 uuid = "3aa3ecc9-5a5d-57c8-8188-3e47bd8068d2"
-version = "0.0.0"
+version = "0.1.0"
 
 [[QuadGK]]
 deps = ["DataStructures", "LinearAlgebra", "Test"]

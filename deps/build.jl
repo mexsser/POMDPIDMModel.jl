@@ -16,7 +16,7 @@ Pkg.add("POMDPPolicies")
 Pkg.add("POMDPSimulators")
 Pkg.add("BeliefUpdaters")
 Pkg.add(PackageSpec(url = "https://github.com/mexsser/DiscreteValueIteration.jl"))
-Pkg.add("QMDP")
+Pkg.add(PackageSpec(url = "https://github.com/JuliaPOMDP/QMDP.jl"))
 
 Pkg.add(PackageSpec(url = "https://github.com/mexsser/Geo.jl"))
 Pkg.add("Plots")
