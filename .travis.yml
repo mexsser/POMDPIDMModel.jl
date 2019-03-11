@@ -28,6 +28,7 @@ addons:
 before_install:
   - sudo apt-get update
   - sudo apt-get install qt5-default
+  - sudo pip3 install --upgrade setuptools
   - sudo pip3 install matplotlib
   - git clone https://github.com/mexsser/POMDPIDMModel.jl POMDPIDMModel && cd "$_"
 
