@@ -24,8 +24,6 @@ before_install:
   - sudo pip3 install matplotlib
 
 #install:
-#  - julia -e 'include("deps/build.jl")'
 
-#script:
-#  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-#  - julia -e 'using Pkg; Pkg.add(pwd()); Pkg.build("$pkgname"); Pkg.test("$pkgname"; coverage=false)'
+script:
+  - julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.build("${JL_PKG}"); Pkg.test("${JL_PKG}"; coverage=false)'
