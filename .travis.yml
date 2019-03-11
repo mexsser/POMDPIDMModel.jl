@@ -2,6 +2,8 @@ language: julia
 os:
   - linux
 
+dist: trusty
+
 julia:
   - 1.0.1
 
@@ -15,12 +17,19 @@ addons:
     packages:
       - ffmpeg
 
+addons:
+  apt:
+    packages:
+      - "python3.6"
+      - "python3-pip"
 
 before_install:
   - sudo apt-get update
   - sudo apt-get install qt5-default
   - sudo pip3 install matplotlib
   - git clone https://github.com/mexsser/POMDPIDMModel.jl POMDPIDMModel && cd "$_"
+
+install:
   - julia --color=yes -i -O -- deps/build.jl
 
 after_success:
