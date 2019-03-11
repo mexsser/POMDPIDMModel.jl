@@ -26,4 +26,4 @@ before_install:
 #install:
 
 script:
-  - julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.build("${JL_PKG}"); Pkg.test("${JL_PKG}"; coverage=false)'
+  - julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.build(\"${JL_PKG}\"); Pkg.test(\"${JL_PKG}\"; coverage=false)'
