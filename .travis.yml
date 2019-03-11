@@ -25,7 +25,8 @@ before_install:
   - git clone https://github.com/mexsser/POMDPIDMModel.jl POMDPIDMModel && cd "$_"
 
 install:
-  - julia --color=yes -i -O -- deps/build.jl
+  - rm -rf ~/.julia/*
+  - julia --color=yes -i -- deps/build.jl
 
 script:
   - julia -e 'using Pkg; Pkg.add(PackageSpec(url = "https://github.com/mexsser/POMDPIDMModel.jl"))'
