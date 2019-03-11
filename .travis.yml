@@ -13,23 +13,14 @@ notifications:
 addons:
   apt:
     sources:
-      - sourceline: 'ppa:mc3man/trusty-media'
-    packages:
-      - ffmpeg
-
-addons:
-  apt:
-    sources:
-      - sourceline: 'ppa:deadsnakes/ppa'
+      - sourceline: 'ppa:jonathonf/python-3.6'
     packages:
       - "python3.6"
-      #- "python3-pip"
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install qt5-defaul
+  - sudo apt-get install ffmpeg qt5-default
   - curl https://bootstrap.pypa.io/get-pip.py | sudo -H python3.6
-  #- sudo pip3 install --upgrade setuptools
   - sudo pip3 install matplotlib
   #- git clone https://github.com/mexsser/POMDPIDMModel.jl POMDPIDMModel && cd "$_"
 
