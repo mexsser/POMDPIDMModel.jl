@@ -2,7 +2,7 @@ language: julia
 os:
   - linux
 
-dist: trusty
+dist: xenial
 
 julia:
   - 1.0.1
