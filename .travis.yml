@@ -22,7 +22,7 @@ before_install:
   - sudo apt-get install ffmpeg qt5-default
   - curl https://bootstrap.pypa.io/get-pip.py | sudo -H python3.6
   - sudo pip3 install matplotlib
-  - git clone https://github.com/mexsser/POMDPIDMModel.jl POMDPIDMModel && cd "$_"
+  #- git clone https://github.com/mexsser/POMDPIDMModel.jl POMDPIDMModel && cd "$_"
 
 #install:
 
