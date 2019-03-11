@@ -23,8 +23,9 @@ before_install:
   - curl https://bootstrap.pypa.io/get-pip.py | sudo -H python3.6
   - sudo pip3 install matplotlib
 
-install:
-  - julia -e 'include("deps/build.jl")'
+#install:
+#  - julia -e 'include("deps/build.jl")'
 
 script:
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.build("POMDPIDMModel"); Pkg.test("POMDPIDMModel"; coverage=false)'
