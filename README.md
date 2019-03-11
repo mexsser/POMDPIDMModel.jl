@@ -25,6 +25,7 @@ $ julia --color=yes -i -O -- runtests.jl
 - ffmpeg
 - python
 - matplotlib
+- qt5-default
 #
 ![Crossroad](test/output/Crossroad.R1R3.Passive.gif)
 #

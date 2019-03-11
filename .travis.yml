@@ -8,11 +8,20 @@ julia:
 notifications:
   email: false
 
-#before_install:
-#  - git clone https://github.com/mexsser/POMDPIDMModel.jl POMDPIDMModel && cd "$_"
+addons:
+  apt:
+    sources:
+      - sourceline: 'ppa:mc3man/trusty-media'
+    packages:
+      - ffmpeg
 
-#before_script:
-#  - julia --color=yes -i -O -- deps/build.jl
+
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install qt5-default
+  - sudo pip3 install matplotlib
+  - git clone https://github.com/mexsser/POMDPIDMModel.jl POMDPIDMModel && cd "$_"
+  - julia --color=yes -i -O -- deps/build.jl
 
 after_success:
   - julia -e 'import POMDPIDMModel; cd(joinpath(dirname(pathof(POMDPIDMModel)), "..", "test"))';
