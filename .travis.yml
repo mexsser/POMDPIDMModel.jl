@@ -26,6 +26,6 @@ before_install:
 #install:
 #  - julia -e 'include("deps/build.jl")'
 
-script:
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.build("POMDPIDMModel"); Pkg.test("POMDPIDMModel"; coverage=false)'
+#script:
+#  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+#  - julia -e 'using Pkg; Pkg.add(pwd()); Pkg.build("$pkgname"); Pkg.test("$pkgname"; coverage=false)'
