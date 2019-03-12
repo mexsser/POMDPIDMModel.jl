@@ -44,12 +44,12 @@ function main()
     gauge = 4.0
     θ = 110.0/(180/π)
     halflen = Rlength/2.0+7.0
-    style = :TJunction; Stopline = 4.0
-    #style = :Crossroad; Stopline = 10.0
+    #style = :TJunction; Stopline = 4.0
+    style = :Crossroad; Stopline = 10.0
     Smin = 2.0
 
     # init
-    DP = DPObj(style, UInt16(2), Rlength, gauge, θ, Stopline, Smin)
+    DP = DPObj(style, UInt16(3), Rlength, gauge, θ, Stopline, Smin)
     up = DiscreteUpdater{DrivePOMDP}(DP) # updater
 #=
     pltMap = Junction(halflen, gauge, θ; style=style)

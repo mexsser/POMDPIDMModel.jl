@@ -67,6 +67,7 @@ function Egotransit(DP::DrivePOMDP, Ss::Sts, Aego::Symbol)
         push!(accVec, acc_ego)
         #@show acc_ego
         sv_next!(Ego_next, acc_ego, 0.1)
+        sv_next!(Other_next, 0.0, 0.1)
         #@show Ego_next
     end
     CSRound!(Ego_next, DP.Δs, DP.Δv)
