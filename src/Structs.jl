@@ -67,9 +67,9 @@ function round(x::Float64, pre::Union{Float64, Int64}) # pre: precision
     n = floor(Int, x/pre)
     m = x - n*pre
     if m >= pre/2
-        return (n+1)*pre
+        return trunc((n+1)*pre; digits= 10)
     else
-        return n*pre
+        return trunc(n*pre; digits= 10)
     end
 end
 

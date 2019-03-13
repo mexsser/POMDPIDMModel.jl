@@ -16,7 +16,7 @@ using Plots
 using Measures
 
 import Base: round, ceil
-import POMDPs: update
+import POMDPs: update, stateindex
 import POMDPModelTools: update_info
 import QMDP: solve, QMDPSolver
 
@@ -29,7 +29,10 @@ export
     solve,
     Simulator,
     Visualisation,
-    solve
+    solve,
+    stateindex,
+    SSRound,
+    sv_boundry!
 
 include("Structs.jl")
 include("Route.jl")

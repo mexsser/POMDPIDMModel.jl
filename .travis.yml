@@ -7,21 +7,21 @@ dist: xenial
 julia:
   - 1.0.1
 
+python:
+- "3.6"
+
 notifications:
   email: false
 
-addons:
-  apt:
-    sources:
-      - sourceline: 'ppa:jonathonf/python-3.6'
-    packages:
-      - "python3.6"
 
 before_install:
   - sudo apt-get update
   - sudo apt-get install ffmpeg qt5-default
-  - curl https://bootstrap.pypa.io/get-pip.py | sudo -H python3.6
-  - sudo pip3 install matplotlib
+  - sudo apt-get install python3-setuptools
+  - sudo apt-get install python3-pip
+  - sudo -H pip3 install --upgrade pip
+  - sudo -H pip3 install sympy
+  - sudo -H pip3 install matplotlib
 
 #install:
 

@@ -16,13 +16,11 @@ function POMDPs.transition(DP::DrivePOMDP, Ss::Sts, Aego::Symbol)
     acc_k = 0.0
     akV = [e for e in DP.Aset.min:DP.Aset.max]
     acc_distribution = DiscreteND1D(acc_k, DP.Aset.comfort/2, akV, 1.0)
-    Ego_next = Egotransit(DP, Ss, Aego).nextSt
-
     PD = zeros(POMDPs.n_states(DP))
     for (i, ak) in enumerate(akV)
         if acc_distribution[i] > 1.0e-2
-            Other_next = sv_next(Ss.Other, ak, DP.Δt) # sign state_next in every loop
-            SIndex = POMDPs.stateindex(DP, Sts(Ego_next, Other_next)) # round is made in stateindex()
+            result = Egotransit(DP, Ss, Aego, ak)
+            SIndex = POMDPs.stateindex(DP, Sts(result.Ego, result.Other)) # round is made in stateindex()
             PD[SIndex] += acc_distribution[i]
         end
     end
@@ -31,7 +29,7 @@ function POMDPs.transition(DP::DrivePOMDP, Ss::Sts, Aego::Symbol)
     return SparseCat(DP.SSpace, PD)
 end
 
-function Egotransit(DP::DrivePOMDP, Ss::Sts, Aego::Symbol)
+function Egotransit(DP::DrivePOMDP, Ss::Sts, Aego::Symbol, acc_k::Float64)
     Ego_next = deepcopy(Ss.Ego)
     Other_next = deepcopy(Ss.Other)
     accVec = Vector{Float64}()
@@ -67,9 +65,9 @@ function Egotransit(DP::DrivePOMDP, Ss::Sts, Aego::Symbol)
         push!(accVec, acc_ego)
         #@show acc_ego
         sv_next!(Ego_next, acc_ego, 0.1)
-        sv_next!(Other_next, 0.0, 0.1)
+        sv_next!(Other_next, acc_k, 0.1)
         #@show Ego_next
     end
     CSRound!(Ego_next, DP.Δs, DP.Δv)
-    return (nextSt=Ego_next, accs=accVec)
+    return (Ego=Ego_next, Other=Other_next, accs=accVec)
 end

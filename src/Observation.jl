@@ -3,10 +3,11 @@
 POMDPs.observations(DP::DrivePOMDP) = DP.OSpace
 POMDPs.n_observations(DP::DrivePOMDP) = length(DP.OSpace)
 function POMDPs.obsindex(DP::DrivePOMDP, Ob::CarOb)
-    try
-        return findfirst(x->x==Ob, DP.OSpace)
-    catch
+    result = findfirst(x->x==Ob, DP.OSpace)
+    if result == nothing
         error("Observation not found: $Ob")
+    else
+        return result
     end
 end
 

@@ -24,17 +24,24 @@ function sv_boundry!(DP::DrivePOMDP, CS::CarSt)
     CS.s = max(CS.s, DP.sV[1])
     CS.v = min(CS.v, DP.vV[end])
     CS.v = max(CS.v, DP.vV[1])
+    return nothing
 end
 
 POMDPs.states(DP::DrivePOMDP) = DP.SSpace # the state space in this model
 POMDPs.n_states(DP::DrivePOMDP) = length(DP.SSpace)
 function POMDPs.stateindex(DP::DrivePOMDP, Ss::Sts)
-      Ss_R = SSRound(Ss, DP.Δs, DP.Δv)
-      sv_boundry!(DP, Ss_R.Ego)
-      sv_boundry!(DP, Ss_R.Other)
-      try
-          return findfirst(x->x==Ss_R, DP.SSpace)
-      catch
-          error("state not found: $Ss")
+      idx = findfirst(x->x==Ss, DP.SSpace)
+      if idx == nothing
+          Ss_R = SSRound(Ss, DP.Δs, DP.Δv)
+          sv_boundry!(DP, Ss_R.Ego)
+          sv_boundry!(DP, Ss_R.Other)
+          idx_R = findfirst(x->x==Ss_R, DP.SSpace)
+          if idx_R == nothing
+              error("state not found: $Ss_R")
+          else
+              return idx_R
+          end
+      else
+          return idx
       end
 end

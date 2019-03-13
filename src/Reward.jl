@@ -59,7 +59,7 @@ function Reward(DP::DrivePOMDP, Ss::Sts, Aego::Symbol, Ssnext::Sts)
         acc_ego = (Ssnext.Ego.v^2 - Ss.Ego.v^2)/(2*(Ssnext.Ego.s - Ss.Ego.s))
     end
     reward = R_crash(DP, Ss, Ssnext) + R_crash(DP, Ss, acc_ego) + R_crash(DP, Ssnext, acc_ego) + R_v(DP, Ss, acc_ego) + R_acc(DP, Ss, acc_ego)
-    #reward = round(reward, 1.0e-4)
+    reward = trunc(reward; digits=4)
     println("## Realtime Reward:$reward")
     return reward
 end

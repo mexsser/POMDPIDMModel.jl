@@ -85,7 +85,7 @@ function main()
 
     # solver QMDP
     solver = QMDP.QMDPSolver(max_iterations=7, tolerance=1e-4, verbose=true)
-    policy = QMDP.solve(solver, DP; sparse=true)
+    policy = QMDP.solve(solver, DP; sparse=false)
     #policy = QMDP.solve(solver, DP)
 
     StsVec, ObsVec, BeliefVec, ActVec, AccMat = Simulator(DP, up, policy, MersenneTwister(rand(UInt32)))
