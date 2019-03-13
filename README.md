@@ -29,8 +29,8 @@ $ julia --color=yes -i -O -- runtests.jl
 - [sympy](https://github.com/sympy/sympy)
 - qt5-default
 #
-![Crossroad](test/output/Crossroad.R1R3.Passive.gif)
+![Crossroad](output/Crossroad.R1R3.Passive.gif)
 #
-![TJunction](test/output/TJunction.R1R3.Passive.gif)
+![TJunction](output/TJunction.R1R3.Passive.gif)
 #
-![TJunction](test/output/TJunction.R1R2.Passive.gif)
+![TJunction](output/TJunction.R1R2.Passive.gif)
