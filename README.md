@@ -11,7 +11,7 @@ Pkg.build("POMDPIDMModel")
 ```julia
 Pkg.test("POMDPIDMModel")
 ```
-or test explicitly
+- or test explicitly
 ```julia
 import POMDPIDMModel
 cd(joinpath(dirname(pathof(POMDPIDMModel)), "..", "test"))
