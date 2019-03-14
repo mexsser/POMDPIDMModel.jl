@@ -35,7 +35,7 @@ mutable struct Route
 
     function Route(Geos::Vector{Geometry})  # constructor
         intersect_Infos = Dict{UInt16, Vector{Tuple{String, Point2D{Float64}, Float64}}}()
-        Length = sum(map(x->x.Length, Geos))
+        Length = round(sum(map(x->x.Length, Geos)), 1.0e-8)
         return new(Geos, intersect_Infos, [], [], Length)
     end
 end
@@ -67,9 +67,9 @@ function round(x::Float64, pre::Union{Float64, Int64}) # pre: precision
     n = floor(Int, x/pre)
     m = x - n*pre
     if m >= pre/2
-        return trunc((n+1)*pre; digits= 10)
+        return trunc((n+1)*pre; digits= 13)
     else
-        return trunc(n*pre; digits= 10)
+        return trunc(n*pre; digits= 13)
     end
 end
 

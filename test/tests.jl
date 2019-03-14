@@ -39,7 +39,7 @@ function DPObj(style::Symbol, Rother::UInt16, Rlength::Float64, gauge::Float64, 
     end
 end
 
-function main()
+#function main()
     Rlength = 20.0
     gauge = 4.0
     θ = 110.0/(180/π)
@@ -91,6 +91,6 @@ function main()
     StsVec, ObsVec, BeliefVec, ActVec, AccMat = Simulator(DP, up, policy, MersenneTwister(rand(UInt32)))
     Visualisation(DP, StsVec, ObsVec, ActVec, AccMat, halflen, gauge, θ, style, "$style.R$(DP.SsInit.Ego.r)R$(DP.SsInit.Other.r).Passive")
 
-end
+#end
 
-main()
+#main()

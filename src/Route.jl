@@ -15,8 +15,8 @@ function CurrGeo_Index_Dis(R::Route, distance::Float64)
     dis = distance
     index = 1
     for i in 1:length(R.Geos)
-        if dis > R.Geos[i].Length + 1.0e-14 # plus precision lose.
-            dis -= R.Geos[i].Length + 1.0e-14
+        if dis > round(R.Geos[i].Length, 1.0e-8) + 1.0e-8 # plus precision lose.
+            dis -= round(R.Geos[i].Length, 1.0e-8) + 1.0e-8
             index += 1
         else
             break
