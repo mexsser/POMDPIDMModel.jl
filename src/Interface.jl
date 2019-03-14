@@ -79,6 +79,7 @@ function Simulator(DP::DrivePOMDP, up::Updater, policy::Policy, rng::AbstractRNG
         @show s
         @show Act_ego#, acc_ego
         @show o
+        println("realtime reward: $r")
         @show r_total
 
         d *= discount(DP)
