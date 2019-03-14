@@ -27,3 +27,6 @@ before_install:
 
 script:
   #- julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.build("$pkgname"); Pkg.test("$pkgname"; coverage=false)'
+
+after_success:
+- julia -e 'using Pkg; cd(Pkg.dir("POMDPIDMModel")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
