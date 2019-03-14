@@ -1,4 +1,3 @@
 .DS_Store
 deps/build.log
 #Manifest.toml
-test/output/.gitkeep
