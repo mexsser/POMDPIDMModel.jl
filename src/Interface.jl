@@ -58,7 +58,7 @@ function Simulator(DP::DrivePOMDP, up::Updater, policy::Policy, rng::AbstractRNG
         sp_p, spi = findmax(sp_cat.probs)
         sp = sp_cat.vals[spi]
         #acc_ego = (sp.Ego.v^2 - s.Ego.v^2)/(2*(sp.Ego.s - s.Ego.s))
-        accVec = Egotransit(DP, s, Act_ego).accs
+        accVec = Egotransit(DP, s, Act_ego, 0.0).accs
         push!(AccMat, accVec)
 
         r = reward(DP, s, Act_ego, sp)
