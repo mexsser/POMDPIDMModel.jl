@@ -32,7 +32,9 @@ export
     solve,
     stateindex,
     SSRound,
-    sv_boundry!
+    sv_boundry!,
+    Junction,
+    PlotRoutes
 
 include("Structs.jl")
 include("Route.jl")
