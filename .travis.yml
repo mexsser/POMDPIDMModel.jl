@@ -26,7 +26,7 @@ before_install:
 #install:
 
 script:
-  - travis_wait 30 julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.build("POMDPIDMModel"); Pkg.test("POMDPIDMModel"; coverage=true)'
+  - travis_wait 30 julia --color=yes -e 'import Pkg; Pkg.build(); Pkg.test("POMDPIDMModel"; coverage=true)'
 
 after_success:
-  - julia -e 'using Pkg; cd(Pkg.dir("POMDPIDMModel")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  - julia -e 'import Pkg; cd(Pkg.dir("POMDPIDMModel")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
