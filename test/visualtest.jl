@@ -41,7 +41,7 @@ end
 
 Rlength = 20.0
 gauge = 4.0
-θ = 110.0/(180/π)
+θ = 100.0/(180/π)
 halflen = Rlength/2.0+7.0
 #style = :TJunction; Stopline = 4.0
 style = :Crossroad; Stopline = 10.0
@@ -51,5 +51,5 @@ Smin = 2.0
 DP = DPObj(style, UInt16(3), Rlength, gauge, θ, Stopline, Smin)
 pltJunction = Junction(halflen, gauge, θ; style=style)
 pltMap = PlotRoutes(DP, pltJunction)
-plot(pltMap, size=(450, 450), fmt =:png)
-savefig("output/map")
+plot(pltMap, size=(450, 300), fmt =:png)
+savefig("output/$style")
