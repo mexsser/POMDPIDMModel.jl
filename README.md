@@ -1,4 +1,5 @@
-# Decision-Making based on [POMDP](https://en.wikipedia.org/wiki/Partially_observable_Markov_decision_process) and [IDM](https://en.wikipedia.org/wiki/Intelligent_driver_model) Model ![Travis CI](https://api.travis-ci.org/mexsser/POMDPIDMModel.jl.svg?branch=master)
+# Decision-Making based on [POMDP](https://en.wikipedia.org/wiki/Partially_observable_Markov_decision_process) and [IDM](https://en.wikipedia.org/wiki/Intelligent_driver_model) Model  
+![Travis CI](https://api.travis-ci.org/mexsser/POMDPIDMModel.jl.svg?branch=master) [![codecov](https://codecov.io/gh/mexsser/POMDPIDMModel.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/mexsser/POMDPIDMModel.jl)  
 ### Installation:  
 - In Julia-REPL, add this package and build:
 ```julia
@@ -6,7 +7,7 @@ using Pkg
 Pkg.add(PackageSpec(url = "https://github.com/mexsser/POMDPIDMModel.jl"))
 Pkg.build("POMDPIDMModel")
 ```
-### Run Test
+### Run Test:
 - in Julia-REPL, type
 ```julia
 Pkg.test("POMDPIDMModel")
