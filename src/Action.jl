@@ -22,20 +22,19 @@ function ToVref(DP::DrivePOMDP, Car::CarSt)
     acc = Acclimit!(DP, acc)
 end
 
-# calculate the acceleration of the ego car using IDM model.
-function Accselect(DP::DrivePOMDP, Ego::CarSt, Aego::Symbol)
+# calculate the acceleration of the ego car using IDM based on stopline
+function AccCalculate(DP::DrivePOMDP, Ego::CarSt, Aego::Symbol)
     acc_ego = 0.0
     Vref = DP.Routes[Ego.r].Vref[min(UInt16(floor(Ego.s/DP.Δs)+1), 21)]
-    # calculate the acceleration of the ego car using IDM model.
-    if Ego.s < DP.Stopline - DP.Smin
+    if Ego.s < DP.Stopline # strategy before stop line
         if Aego == :giveup
-            acc_ego = IDM(Vego=Ego.v, Vfront=0.0, Vref=Vref, Snet=DP.Stopline-Ego.s, T=0.1, Amax=DP.Aset.max, Bdec=DP.Aset.comfort, Smin=DP.Smin)
+            acc_ego = IDM(Vego=Ego.v, Vfront=0.0, Vref=Vref, Snet=DP.Stopline-Ego.s, T=0.1, Amax=DP.Aset.max, Bdec=DP.Aset.comfort, Smin=0.0)
         elseif Aego == :takeover
-            acc_ego = IDM(Vego=Ego.v, Vfront=Vref, Vref=Vref, Snet=Inf, T=0.1, Amax=DP.Aset.max, Bdec=DP.Aset.comfort, Smin=DP.Smin)
+            acc_ego = IDM(Vego=Ego.v, Vfront=Vref, Vref=Vref, Snet=Inf, T=0.1, Amax=DP.Aset.max, Bdec=DP.Aset.comfort, Smin=0.0)
         else
             error("Transform failed: Invalid Action $Aego !")
         end
-    else
+    else # strategy after stop line
         if Aego == :giveup # brake with min a
             acc_ego = DP.Aset.min
         elseif Aego == :takeover
@@ -47,13 +46,14 @@ function Accselect(DP::DrivePOMDP, Ego::CarSt, Aego::Symbol)
     return acc_ego
 end
 
-function Accselect(DP::DrivePOMDP, Ego::CarSt, Other::CarSt, Aego::Symbol, Δs::Float64) # simulate ACC
+# calculate the acceleration of the ego car using IDM based on Other and Ego cars; simulate ACC
+function AccCalculate(DP::DrivePOMDP, Ego::CarSt, Other::CarSt, Aego::Symbol, Δs::Float64)
     acc_ego = 0.0
     Vref = DP.Routes[Ego.r].Vref[min(UInt16(floor(Ego.s/DP.Δs)+1), 21)]
-    if Aego == :giveup # brake with min a
-        acc_ego = DP.Aset.min
-    elseif Aego == :takeover
+    if Aego == :giveup # if giveup, ego car follows other car
         acc_ego = IDM(Vego=Ego.v, Vfront=min(Vref, Other.v), Vref=Vref, Snet=Δs, T=0.1, Amax=DP.Aset.max, Bdec=DP.Aset.comfort, Smin=DP.Smin)
+    elseif Aego == :takeover # if take over, ego car drives as on free road.
+        acc_ego = IDM(Vego=Ego.v, Vfront=Vref, Vref=Vref, Snet=Inf, T=0.1, Amax=DP.Aset.max, Bdec=DP.Aset.comfort, Smin=DP.Smin)
     else
         error("Transform failed: Invalid Action $Aego !")
     end

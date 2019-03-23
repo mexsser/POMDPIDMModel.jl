@@ -44,22 +44,13 @@ end
     gauge = 4.0
     θ = 110.0/(180/π)
     halflen = Rlength/2.0+7.0
-    #style = :TJunction; Stopline = 4.0
-    style = :Crossroad; Stopline = 10.0
+    style = :TJunction; Stopline = 4.0
+    #style = :Crossroad; Stopline = 10.0
     Smin = 2.0
 
     # init
-    DP = DPObj(style, UInt16(3), Rlength, gauge, θ, Stopline, Smin)
+    DP = DPObj(style, UInt16(2), Rlength, gauge, θ, Stopline, Smin)
     up = DiscreteUpdater{DrivePOMDP}(DP) # updater
-#=
-    pltMap = Junction(halflen, gauge, θ; style=style)
-    pltMap = PlotRoutes(DP, pltMap)
-    DrawStopline!(pltMap, DP.Routes[1], DP.Stopline, gauge)
-    for i in 1:length(DP.OSpace)
-        plot!(pltMap, [DP.OSpace[i].x], [DP.OSpace[i].y], seriestype=:scatter, markersize = 3, c=:green, markerstrokecolor=:green)
-    end
-    plot(pltMap, size=(650, 650))
-=#
 
     ################################################################################
     #################### Test Solvers ##############################################
@@ -84,7 +75,7 @@ end
     =#
 
     # solver QMDP
-    solver = QMDP.QMDPSolver(max_iterations=7, tolerance=1e-4, verbose=true)
+    solver = QMDP.QMDPSolver(max_iterations=8, tolerance=1e-4, verbose=true)
     policy = QMDP.solve(solver, DP; sparse=true)
     #policy = QMDP.solve(solver, DP)
 

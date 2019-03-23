@@ -48,7 +48,7 @@ function RoutesIntersect(R1::Route, R2::Route)
         for j in 1:length(R2.Geos)
             Result = GeosIntersect(R1.Geos[i], R2.Geos[j])
             if Result.intersect
-                push!(IntersectInfos, (Result..., GIndex1=UInt16(i), GIndex2=UInt16(j))) # if intersect, return the first intersection point and break
+                push!(IntersectInfos, (Result..., GIndex1=UInt16(i), GIndex2=UInt16(j))) # if intersect, return the intersection point, distance in Geos and Geo indexes.
             end
         end
     end
@@ -108,7 +108,7 @@ function RouteAVrefset!(R::Route, Sstep::Float64,
                         push!(FVvec, s->R.Geos[Gi].Vstd)
                         push!(FAvec, s->0.0)
                     else # a != 0
-                        rel_v, rel_a = Exp_nownext(R.Geos[Gi].Vstd, R.Geos[Gi+1].Vstd, R.Geos[Gi].Length, Aset)
+                        rel_v, rel_a = Exp_approach(R.Geos[Gi].Vstd, R.Geos[Gi+1].Vstd, R.Geos[Gi].Length, Aset)
                         push!(FVvec, rel_v)
                         push!(FAvec, rel_a)
                     end
@@ -119,7 +119,7 @@ function RouteAVrefset!(R::Route, Sstep::Float64,
                             push!(FVvec, s->R.Geos[Gi].Vstd)
                             push!(FAvec, s->0.0)
                         else # a != 0
-                            rel_v, rel_a = Exp_nownext(R.Geos[Gi].Vstd, R.Geos[Gi+1].Vstd, R.Geos[Gi].Length, Aset)
+                            rel_v, rel_a = Exp_approach(R.Geos[Gi].Vstd, R.Geos[Gi+1].Vstd, R.Geos[Gi].Length, Aset)
                             push!(FVvec, rel_v)
                             push!(FAvec, rel_a)
                         end
@@ -127,7 +127,7 @@ function RouteAVrefset!(R::Route, Sstep::Float64,
                         # if preceding Geo exists, but has a different Vstd (if pre_Geo != line, Vend == Vstd),
                         # then calculate Vref with the Vend of preceding Geo and Vstd of current Geo // and Vstd of next Geo.
                         if R.Geos[Gi-1].Vstd != R.Geos[Gi].Vstd
-                            rel_v, rel_a = Exp_prenow(R.Geos[Gi-1].Vstd, R.Geos[Gi].Vstd, R.Geos[Gi].Length, Aset)
+                            rel_v, rel_a = Exp_leave(R.Geos[Gi-1].Vstd, R.Geos[Gi].Vstd, R.Geos[Gi].Length, Aset)
                             push!(FVvec, rel_v)
                             push!(FAvec, rel_a)
                         else # R.Geos[Gi-1].Vstd == R.Geos[Gi].Vstd && Gi == length(R.Geos)
@@ -162,18 +162,22 @@ function RouteAVrefset!(R::Route, Sstep::Float64,
     R.Aref = Avec
 end
 
-function Exp_nownext(Vnow::Float64, Vnext::Float64, Length,
-    Aset::NamedTuple{(:min, :max, :comfort),Tuple{Float64, Float64, Float64}})
+function Exp_approach(Vnow::Float64, Vnext::Float64, Length,
+    Aset::NamedTuple{(:min, :max, :comfort),Tuple{Float64, Float64, Float64}}) # entering
 
-    a = (Vnext^2 - Vnow^2)/(2*Length) # a has sign
-    if a > Aset.max || a < Aset.min
+    a_req = (Vnext^2 - Vnow^2)/(2*Length) # a_req has sign
+    if a_req > Aset.max || a_req < Aset.min
         error("""
-              This Route is too short to accelerate the car.
-              Required a : $a
+              This Route is too short to accelerate/brake the car.
+              Required a : $a_req
               Length available: $Length.
               """)
     end
-
+    # Vehicle should accelerate at least with a comfort a.
+    a = a_req
+    if abs(a_req) < Aset.comfort
+        a = a_req > 0 ? Aset.comfort : -Aset.comfort
+    end
     s_acc = (Vnext^2 - Vnow^2)/(2*a)
     Δs = Length - s_acc
     rel_v(s::Float64) = begin
@@ -195,18 +199,20 @@ function Exp_nownext(Vnow::Float64, Vnext::Float64, Length,
     return rel_v, rel_a
 end
 
-function Exp_prenow(Vpre::Float64, Vnow::Float64, Length,
-    Aset::NamedTuple{(:min, :max, :comfort),Tuple{Float64, Float64, Float64}})
-    a = (Vnow^2 - Vpre^2)/(2*Length)
-    if a > Aset.max || a < Aset.min
+function Exp_leave(Vpre::Float64, Vnow::Float64, Length,
+    Aset::NamedTuple{(:min, :max, :comfort),Tuple{Float64, Float64, Float64}})  # leaving
+    a_req = (Vnow^2 - Vpre^2)/(2*Length)
+    if a_req > Aset.max || a_req < Aset.min
         error("""
-              This Route is too short to accelerate the car.
+              This Route is too short to accelerate/brake the car.
               Vpre: $Vpre
               Vcurrent: $Vnow
-              Required a : $a
+              Required a : $a_req
               Length available: $Length.
               """)
     end
+    # Vehicle should accelerate itself as fast as it can.
+    a = a_req > 0 ? Aset.max : Aset.min
     s_acc = (Vnow^2 - Vpre^2)/(2*a)
     rel_v(s::Float64) = begin
                             if s < s_acc
