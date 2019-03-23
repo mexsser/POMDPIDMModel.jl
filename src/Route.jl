@@ -165,15 +165,19 @@ end
 function Exp_nownext(Vnow::Float64, Vnext::Float64, Length,
     Aset::NamedTuple{(:min, :max, :comfort),Tuple{Float64, Float64, Float64}})
 
-    a = (Vnext^2 - Vnow^2)/(2*Length) # a has sign
-    if a > Aset.max || a < Aset.min
+    a_req = (Vnext^2 - Vnow^2)/(2*Length) # a_req has sign
+    if a_req > Aset.max || a_req < Aset.min
         error("""
-              This Route is too short to accelerate the car.
+              This Route is too short to accelerate/breaks the car.
               Required a : $a
               Length available: $Length.
               """)
     end
-
+    # Vehicle should accelerates itself as fast as it can.
+    a = a_req
+    if abs(a_req) < Aset.comfort
+        a = a_req > 0 ? Aset.comfort : -Aset.comfort
+    end
     s_acc = (Vnext^2 - Vnow^2)/(2*a)
     Δs = Length - s_acc
     rel_v(s::Float64) = begin
@@ -197,16 +201,18 @@ end
 
 function Exp_prenow(Vpre::Float64, Vnow::Float64, Length,
     Aset::NamedTuple{(:min, :max, :comfort),Tuple{Float64, Float64, Float64}})
-    a = (Vnow^2 - Vpre^2)/(2*Length)
-    if a > Aset.max || a < Aset.min
+    a_req = (Vnow^2 - Vpre^2)/(2*Length)
+    if a_req > Aset.max || a_req < Aset.min
         error("""
-              This Route is too short to accelerate the car.
+              This Route is too short to accelerate/breaks the car.
               Vpre: $Vpre
               Vcurrent: $Vnow
               Required a : $a
               Length available: $Length.
               """)
     end
+
+    a = a_req > 0 ? Aset.max : Aset.min
     s_acc = (Vnow^2 - Vpre^2)/(2*a)
     rel_v(s::Float64) = begin
                             if s < s_acc
@@ -240,6 +246,7 @@ function RoutesGenerator(Vgeos::Matrix{Float64}, Rlength::Float64, gauge::Float6
         error("The input style $style is not supported. Please choose either :Crossroad or :TJunciton.")
     end
 
+    # obstacle vehicle
     Linepts_shared = [0.0 0.0; gauge/sin(θ) gauge/sin(θ)+GRatio_Other*Rlength]
     Linepts_sharedR = Rmat(π/2-θ)*Linepts_shared
     Linepts_sharedR[1,:] .-= gauge/(2*sin(θ))
@@ -259,6 +266,7 @@ function RoutesGenerator(Vgeos::Matrix{Float64}, Rlength::Float64, gauge::Float6
     Geo23 = Geometry(Point2D{Float64}(-c3_endpt.x, -c3_endpt.y), Point2D{Float64}(-c3_endpt.x-Rlength+Geo_shared.Length+Geo22.Length, -c3_endpt.y), Vgeos[2, 3])
     R2 = Route([Geo_shared, Geo22, Geo23])
 
+    # ego vehicle
     if style == :Crossroad
         Line1pts = [0.0 0.0; -GRatio_Ego*Rlength (1.0-GRatio_Ego)*Rlength]
         Line1ptsR = Rmat(π/2-θ)*Line1pts

@@ -65,14 +65,19 @@ function DrawStopline!(plt::Plots.Plot{Plots.GRBackend}, R::Route, StoplineLengt
 end
 
 function PlotRoutes(DP::DrivePOMDP, plt::Plots.Plot{Plots.GRBackend})
+    colortable = Vector{Symbol}([:green, :red, :blue])
     for i in 1:length(DP.Routes)
-        if i == 1
-            for G in DP.Routes[i].Geos
-                PlotGeometry(G, plt; color=:blue)
+#=        if i == 1 || i == 4
+            if i == 4
+                for G in DP.Routes[i].Geos
+                    PlotGeometry(G, plt; color=:green)
+                end
             end
         else
-            for G in DP.Routes[i].Geos
-                PlotGeometry(G, plt)
+=#
+        if i == 3
+            for (Gi, G) in enumerate(DP.Routes[i].Geos)
+                    PlotGeometry(G, plt; color=colortable[Gi%4])
             end
         end
     end
@@ -91,9 +96,12 @@ function PlotGeometry(Geo::Geometry, plt::Plots.Plot{Plots.GRBackend}; color::Sy
         x, y = Plots.unzip(pts)
         x .+= Center.x
         y .+= Center.y
-        plot!(plt, x, y, c=color, linestyle=:dot)
+        plot!(plt, x, y, c=color, linestyle=:dot, linewidth = 1.5)
+        pts_mirror = Rmat(π)*[x[:,1], y[:,1]]
+        #plot!(plt, pts_mirror[1,:], pts_mirror[2,:], c=color, linestyle=:dashdot, linewidth = 1)
     elseif Geo.GType == "line"
-        plot!(plt, [Geo.Sp.x, Geo.Ep.x], [Geo.Sp.y, Geo.Ep.y], c=color, linestyle=:dot)
+        plot!(plt, [Geo.Sp.x, Geo.Ep.x], [Geo.Sp.y, Geo.Ep.y], c=color, linestyle=:dot, linewidth = 1.5)
+        #plot!(plt, [-Geo.Sp.x, -Geo.Ep.x], [-Geo.Sp.y, -Geo.Ep.y], c=color, linestyle=:dashdot, linewidth = 1)
     else
         error("Can not print this type of geomatry: $(Geo.GType)")
     end
