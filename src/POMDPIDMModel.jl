@@ -32,7 +32,8 @@ export
     solve,
     stateindex,
     SSRound,
-    sv_boundry!
+    sv_boundry!,
+    IDMtransit
 
 include("Structs.jl")
 include("Route.jl")

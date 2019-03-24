@@ -40,7 +40,7 @@ function DPObj(style::Symbol, Rother::UInt16, Rlength::Float64, gauge::Float64, 
 end
 
 #function main()
-    Rlength = 20.0
+    Rlength = 21.0
     gauge = 4.0
     θ = 110.0/(180/π)
     halflen = Rlength/2.0+7.0
@@ -75,7 +75,7 @@ end
     =#
 
     # solver QMDP
-    solver = QMDP.QMDPSolver(max_iterations=8, tolerance=1e-4, verbose=true)
+    solver = QMDP.QMDPSolver(max_iterations=7, tolerance=1e-4, verbose=true)
     policy = QMDP.solve(solver, DP; sparse=true)
     #policy = QMDP.solve(solver, DP)
 

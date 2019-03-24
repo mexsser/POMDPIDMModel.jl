@@ -36,7 +36,11 @@ function AccCalculate(DP::DrivePOMDP, Ego::CarSt, Aego::Symbol)
         end
     else # strategy after stop line
         if Aego == :giveup # brake with min a
-            acc_ego = DP.Aset.min
+            if Ego.v > 0
+                acc_ego = DP.Aset.min
+            else
+                acc_ego == 0.0
+            end
         elseif Aego == :takeover
             acc_ego = IDM(Vego=Ego.v, Vfront=Vref, Vref=Vref, Snet=Inf, T=0.1, Amax=DP.Aset.max, Bdec=DP.Aset.comfort, Smin=DP.Smin)
         else

@@ -13,14 +13,19 @@ end
 ########## transition ########
 # generate the probability of ending in state x' when executing action a in state x
 function POMDPs.transition(DP::DrivePOMDP, Ss::Sts, Aego::Symbol)
-    acc_k = 0.0
+    acc_k = 0.0 # we can also use Aref
     akV = [e for e in DP.Aset.min:DP.Aset.max]
     acc_distribution = DiscreteND1D(acc_k, DP.Aset.comfort/2, akV, 1.0)
     PD = zeros(POMDPs.n_states(DP))
     for (i, ak) in enumerate(akV)
         if acc_distribution[i] > 1.0e-2
             result = IDMtransit(DP, Ss, Aego, ak)
-            SIndex = POMDPs.stateindex(DP, Sts(result.Ego, result.Other)) # round is made in stateindex()
+            SIndex = 0
+            try
+                SIndex = POMDPs.stateindex(DP, Sts(result.Ego, result.Other)) # round is made in stateindex()
+            catch
+                error("Transition Result error: $result")
+            end
             PD[SIndex] += acc_distribution[i]
         end
     end
@@ -31,9 +36,11 @@ end
 
 function IDMtransit(DP::DrivePOMDP, Ss::Sts, Aego::Symbol, acc_k::Float64)
 
-    #if (Ss.Ego.s <= 0.0 && Ss.Ego.v <= 0.0 && Aego == :giveup) || (Ss.Other.s <= 0.0 && Ss.Other.v <= 0.0 && acc_k <= 0.0)
-    if (Ss.Ego.v <= 0.0 && Aego == :giveup) || (Ss.Other.v <= 0.0 && acc_k <= 0.0)
-        return (Ego=Ss.Ego, Other=Ss.Other, accs=zeros(Int64(DP.Δt/0.1)))
+    if Ss.Ego.s <= 0.0 && Ss.Ego.v <= 0.0 && Aego == :giveup # avoid transition of edge states going out of state range
+        Other = sv_next(Ss.Other, acc_k, DP.Δt)
+        sv_boundry!(DP, Other)
+        Ego = deepcopy(Ss.Ego)
+        return (Ego=Ego, Other=Other, accs=zeros(Int64(DP.Δt/0.1)))
     end
 
     Ego = deepcopy(Ss.Ego)
@@ -54,23 +61,30 @@ function IDMtransit(DP::DrivePOMDP, Ss::Sts, Aego::Symbol, acc_k::Float64)
 
     for i in 0:Int64(DP.Δt/0.1)-1 # update the state of EgoCar
         acc_ego = 0.0
-        if overlap # stop line no longer needed.
-            Δs = Other.s - Ego.s + dist1 - distk
-            if Δs < DP.Smin # means ego car can not follow other car, ACC mode no longer appliable
-                if Aego == :giveup # brakes with min a
-                    acc_ego = DP.Aset.min
-                else # :takeover # drives freely
+        if overlap
+            if Ego.s < DP.Stopline
+                acc_ego = AccCalculate(DP, Ego, Aego) # only based on stopline, the state of other car is not directly used.
+            else # Ego.s >= DP.Stopline
+                if Aego == :giveup
+                    Δs = Other.s - Ego.s + dist1 - distk
+                    if Δs < DP.Smin # ego vehicle can not follow other vehicle because too close/ego car is in front of other car.
+                        if Ego.v > 0 # vehicle should not go back
+                            acc_ego = DP.Aset.min
+                        else
+                            acc_ego = 0.0
+                        end
+                    else # Δs >= DP.Smin; ego should follow other
+                        acc_ego = AccCalculate(DP, Ego, Other, Aego, Δs)
+                    end
+                else # Aego == :takeover -> drives freely
                     Vref = DP.Routes[Ego.r].Vref[min(UInt16(floor(Ego.s/DP.Δs)+1), 21)]
                     acc_ego = IDM(Vego=Ego.v, Vfront=Vref, Vref=Vref, Snet=Inf, T=0.1, Amax=DP.Aset.max, Bdec=DP.Aset.comfort, Smin=DP.Smin)
                 end
-            else # means ego car can follow other car now.
-                acc_ego = AccCalculate(DP, Ego, Other, Aego, Δs)
             end
-
         else # no overlap
-            acc_ego = AccCalculate(DP, Ego, Aego) # only based on stopline, the state of other car is not relative
-            acc_ego = Acclimit!(DP, acc_ego)
+            acc_ego = AccCalculate(DP, Ego, Aego)
         end
+        acc_ego = Acclimit!(DP, acc_ego)
         push!(accVec, acc_ego)
         #@show acc_ego
         sv_next!(Ego, acc_ego, 0.1)
@@ -80,6 +94,8 @@ function IDMtransit(DP::DrivePOMDP, Ss::Sts, Aego::Symbol, acc_k::Float64)
         #@show Ego
         #@show Other
     end
-    CSRound!(Ego, DP.Δs, DP.Δv)
+
+    #CSRound!(Ego, DP.Δs, DP.Δv)
+    #CSRound!(Other, DP.Δs, DP.Δv)
     return (Ego=Ego, Other=Other, accs=accVec)
 end
