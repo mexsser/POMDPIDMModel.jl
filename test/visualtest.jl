@@ -42,19 +42,23 @@ end
 
 Rlength = 24.0
 gauge = 4.0
-θ = 70.0/(180/π)
+θ = 110.0/(180/π)
 halflen = Rlength/2.0+7.0
 style = :TJunction; Stopline = 4.0
 #style = :Crossroad; Stopline = 10.0
 Smin = 2.0
 
 # init
-DP = DPObj(style, UInt16(3), Rlength, gauge, θ, Stopline, Smin)
-#pltJunction = Junction(halflen, gauge, θ; style=style)
-#pltMap = PlotRoutes(DP, pltJunction)
-#plot(pltMap, size=(450, 310))
-#plot(pltMap, size=(600, 600))
-#savefig("output/Figure4.3.pdf")
+DP = DPObj(style, UInt16(2), Rlength, gauge, θ, Stopline, Smin)
+pltJunction = Junction(halflen, gauge, θ; style=style)
+pltMap = PlotRoutes(DP, pltJunction)
+DrawStopline!(pltMap, DP.Routes[DP.SsInit.Ego.r], DP.Stopline, gauge)
+plot(pltMap, size=(600, 400))
+#plot(pltMap, size=(600, 500))
+savefig("output/Figure4.6a.pdf")
+
+
+#=
 Svec = [i for i in 0.0:0.1:Rlength]
 idx_r12 = findfirst(x->x==3.0, DP.Routes[3].Vref)+1
 Svec_r1 = Svec[1:idx_r12]
@@ -81,3 +85,4 @@ plt2 = plot(Svec_r1, Aref_r1, xlim=(0.0, Rlength+1), ylim=(-2.0, 4.0), c=:green,
 plot!(plt2, Svec_r2, Aref_r2, c=:red)
 plot!(plt2, Svec_r3, Aref_r3, c=:blue)
 savefig("output/Aref.pdf")
+=#

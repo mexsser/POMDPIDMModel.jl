@@ -66,7 +66,14 @@ end
 
 function PlotRoutes(DP::DrivePOMDP, plt::Plots.Plot{Plots.GRBackend})
     colortable = Vector{Symbol}([:green, :red, :blue])
-    for i in 1:length(DP.Routes)
+    for (Gi, G) in enumerate(DP.Routes[1].Geos)
+            PlotGeometry(G, plt; color=:blue)
+    end
+    for (Gi, G) in enumerate(DP.Routes[2].Geos)
+            PlotGeometry(G, plt; color=:red)
+    end
+
+#=    for i in 1:length(DP.Routes)
 #=        if i == 1 || i == 4
             if i == 4
                 for G in DP.Routes[i].Geos
@@ -77,10 +84,11 @@ function PlotRoutes(DP::DrivePOMDP, plt::Plots.Plot{Plots.GRBackend})
 =#
         if i == 3
             for (Gi, G) in enumerate(DP.Routes[i].Geos)
-                    PlotGeometry(G, plt; color=colortable[Gi%4])
+                    PlotGeometry(G, plt; color=:red)#colortable[Gi%4])
             end
         end
     end
+=#
     return plt
 end
 

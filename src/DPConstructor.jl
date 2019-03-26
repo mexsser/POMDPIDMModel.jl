@@ -34,7 +34,7 @@ function DrivePOMDP(discount_factor::Float64, Δt::Float64, sRange::Vector{Float
      StdDevs = (0.1, 0.1)
      rng = MersenneTwister(rand(UInt32))
      """
-     avoid generating too many duplicate Positions in OSpace because of R_shared
+     avoid generating too many duplicate Positions in OSpace because of the overlapped Geometrie at the beginning.
      """
      for s in sRange[1:end]
          if s <= s0_shared

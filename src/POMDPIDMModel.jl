@@ -34,7 +34,8 @@ export
     SSRound,
     sv_boundry!,
     Junction,
-    PlotRoutes
+    PlotRoutes,
+    DrawStopline!
 
 include("Structs.jl")
 include("Route.jl")
