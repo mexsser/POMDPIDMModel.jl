@@ -26,6 +26,14 @@ CarOb() = CarOb(0.0, 0.0, 0.0)
 Base.:(==)(a::CarOb, b::CarOb) = a.v == b.v && a.x == b.x && a.y == b.y
 Base.hash(ob::CarOb, h::UInt) = hash(ob.v, hash(ob.x, hash(ob.y, h)))
 
+struct Obs
+    Ego::CarSt
+    Other::CarOb
+end
+Obs() = Obs(CarSt(), CarOb())
+Base.:(==)(A::Obs, B::Obs) = A.Ego == B.Ego && A.Other == B.Other
+Base.hash(obs::Obs, h::UInt) = hash(obs.Ego, hash(obs.Other, h))
+
 mutable struct Route
     Geos::Vector{Geometry}
     intersect_Infos::Dict{UInt16, Vector{Tuple{String, Point2D{Float64}, Float64}}} # UInt16: the index of the car whoes route intersects with that of ego car;
@@ -41,7 +49,7 @@ mutable struct Route
 end
 
 # POMDP{State, Action, Observation}; action is the acceleration of ego car.
-struct DrivePOMDP <: POMDP{Sts, Symbol, CarOb}
+struct DrivePOMDP <: POMDP{Sts, Symbol, Obs}
         ##### constants #####
         discount_factor::Float64
         Δt::Float64 # time step
@@ -55,7 +63,7 @@ struct DrivePOMDP <: POMDP{Sts, Symbol, CarOb}
 
         Routes::Vector{Route}
         SSpace::Vector{Sts}
-        OSpace::Vector{CarOb}
+        OSpace::Vector{Obs}
         SsInit::Sts
 
         # used only in IDM model

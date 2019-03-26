@@ -74,7 +74,7 @@ function Simulator(DP::DrivePOMDP, up::Updater, policy::Policy, rng::AbstractRNG
         #println("--- -------------------- ---")
         ob_p, obi = findmax(ob_cat.probs)
         o = ob_cat.vals[obi]
-        push!(ObsVec, o)
+        push!(ObsVec, o.Other)
 
         @show s
         @show Act_ego#, acc_ego
@@ -94,7 +94,7 @@ function Simulator(DP::DrivePOMDP, up::Updater, policy::Policy, rng::AbstractRNG
 end
 
 
-function update(bu::DiscreteUpdater, b::DiscreteBelief, a::Symbol, o::CarOb)
+function update(bu::DiscreteUpdater, b::DiscreteBelief, a::Symbol, o::Obs)
     #println("----- update -----")
     pomdp = b.pomdp
     state_space = b.state_list

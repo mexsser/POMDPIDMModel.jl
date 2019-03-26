@@ -28,7 +28,9 @@ function DrivePOMDP(discount_factor::Float64, Δt::Float64, sRange::Vector{Float
          push!(SSpace, Sts(ego, other))
      end
 
-     OSpace = CarOb[]
+     OSpace = Obs[]
+     OtherOSpace = CarOb[]
+
      PosVec = Point2D[]
      s0_shared = Routes[rRange[1]].Geos[1].Length
      StdDevs = (0.1, 0.1)
@@ -55,7 +57,11 @@ function DrivePOMDP(discount_factor::Float64, Δt::Float64, sRange::Vector{Float
          end
      end
      for v in vRange, Pos in PosVec
-         push!(OSpace, CarOb(v, Pos.x, Pos.y))
+         push!(OtherOSpace, CarOb(v, Pos.x, Pos.y))
+     end
+
+     for EgoOb in EgoSSpace, OtherOb in OtherOSpace
+         push!(OSpace, Obs(EgoOb, OtherOb))
      end
 
      DP = DrivePOMDP(discount_factor, Δt, Δs, Δv, sRange, vRange, rRange, Aset, Routes, SSpace, OSpace, SsInit, Stopline, Smin)

@@ -2,8 +2,8 @@
 # Return the entire observation space.
 POMDPs.observations(DP::DrivePOMDP) = DP.OSpace
 POMDPs.n_observations(DP::DrivePOMDP) = length(DP.OSpace)
-function POMDPs.obsindex(DP::DrivePOMDP, Ob::CarOb)
-    result = findfirst(x->x==Ob, DP.OSpace)
+function POMDPs.obsindex(DP::DrivePOMDP, obs::Obs)
+    result = findfirst(x->x==obs, DP.OSpace)
     if result == nothing
         error("Observation not found: $Ob")
     else
@@ -22,12 +22,16 @@ function POMDPs.observation(DP::DrivePOMDP, newSs::Sts)
     N2 = Normal(0.0, DP.Δs)
     for i = 1:length(DP.OSpace)
         Ob = DP.OSpace[i]
-        fk1 = weight*abs(Ob.v - newSs.Other.v)
-        Pfk1 = cdf(N1, -fk1)
-        fk2 = Distance2D(Point2D{Float64}(Ob.x, Ob.y), OtherPos)
-        Pfk2 = cdf(N2, -weight*fk2)
-        pfk = Pfk1*Pfk2
-        Ob_dist[i] = pfk > 1.0e-3 ? pfk : 0.0
+        if Ob.Ego.v != newSs.Ego.v || Ob.Ego.s != newSs.Ego.s
+            Ob_dist[i] = 0.0
+        else
+            fk1 = weight*abs(Ob.Other.v - newSs.Other.v)
+            Pfk1 = cdf(N1, -fk1)
+            fk2 = Distance2D(Point2D{Float64}(Ob.Other.x, Ob.Other.y), OtherPos)
+            Pfk2 = cdf(N2, -weight*fk2)
+            pfk = Pfk1*Pfk2
+            Ob_dist[i] = pfk > 1.0e-3 ? pfk : 0.0
+        end
     end
     normalize!(Ob_dist, 1)
     return SparseCat(DP.OSpace, Ob_dist)  # return type is a distribution object, but doesn't need to be the same as DiscreteBelief
