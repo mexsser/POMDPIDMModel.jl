@@ -59,7 +59,8 @@ function IDMtransit(DP::DrivePOMDP, Ss::Sts, Aego::Symbol, acc_k::Float64)
         end
     end
 
-    for i in 0:Int64(DP.Δt/0.1)-1 # update the state of EgoCar
+    step = Int64(DP.Δt/0.1)
+    for i in 1:step+1 # update the state of EgoCar and OtherCar
         acc_ego = 0.0
         if overlap
             if Ego.s < DP.Stopline
@@ -78,7 +79,7 @@ function IDMtransit(DP::DrivePOMDP, Ss::Sts, Aego::Symbol, acc_k::Float64)
                     end
                 else # Aego == :takeover -> drives freely
                     Vref = DP.Routes[Ego.r].Vref[min(UInt16(floor(Ego.s/DP.Δs)+1), 21)]
-                    acc_ego = IDM(Vego=Ego.v, Vfront=Vref, Vref=Vref, Snet=Inf, T=0.1, Amax=DP.Aset.max, Bdec=DP.Aset.comfort, Smin=DP.Smin)
+                    acc_ego = IDM(Vego=Ego.v, Vfront=Vref, Vref=Vref, Snet=Inf, T=1.0, Amax=DP.Aset.max, Bdec=DP.Aset.comfort, Smin=DP.Smin)
                 end
             end
         else # no overlap
@@ -87,10 +88,12 @@ function IDMtransit(DP::DrivePOMDP, Ss::Sts, Aego::Symbol, acc_k::Float64)
         acc_ego = Acclimit!(DP, acc_ego)
         push!(accVec, acc_ego)
         #@show acc_ego
-        sv_next!(Ego, acc_ego, 0.1)
-        sv_boundry!(DP, Ego)
-        sv_next!(Other, acc_k, 0.1)
-        sv_boundry!(DP, Other)
+        if i <= step
+            sv_next!(Ego, acc_ego, 0.1)
+            sv_boundry!(DP, Ego)
+            sv_next!(Other, acc_k, 0.1)
+            sv_boundry!(DP, Other)
+        end
         #@show Ego
         #@show Other
     end

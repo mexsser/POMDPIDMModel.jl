@@ -138,7 +138,7 @@ function update_info(bu::DiscreteUpdater, b::Any, a::Symbol, o::CarOb)
     return update(bu, b, a, o), nothing
 end
 
-#=
+
 function show_cat(cat::SparseCat, num::UInt16)
     cat_dict = Dict(zip(cat.vals, cat.probs))
     println(sort(collect(cat_dict), by = x->x[2])[end-num:end])
@@ -148,4 +148,3 @@ function show_DB(DB::DiscreteBelief{DrivePOMDP, Sts}, num::UInt16)
     DB_dict = Dict(zip(DB.state_list, DB.b))
     println(sort(collect(DB_dict), by = x->x[2])[end-num:end])
 end
-=#

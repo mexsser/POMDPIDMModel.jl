@@ -1,5 +1,3 @@
-clibrary(:colorcet)
-
 function State2XY(DP::DrivePOMDP, st::CarSt)
     Pos = GetGlobalPosition(DP.Routes[st.r], st.s)
     return (Pos.x, Pos.y)
@@ -17,10 +15,10 @@ function Junction(halflen::Float64, gauge::Float64, θ::Float64; style::Symbol) 
     else
         error("style $style not supported, please choose :Crossroad or :TJunction and try again.")
     end
-    plot!([-halflen, halflen], [0.0, 0.0], c=:gray, linestyle=:dash) # x axis; center line
+    plot!([-halflen, halflen], [0.0, 0.0], c=:lightgray, linestyle=:dash) # x axis; center line
     α = π/2 - θ
     YcenterR = Rmat(α)*Ycenter
-    plot!(YcenterR[1,:], YcenterR[2,:], c=:gray, linestyle=:dash) # y axis; center line
+    plot!(YcenterR[1,:], YcenterR[2,:], c=:lightgray, linestyle=:dash) # y axis; center line
 
     rr = 1.0
     # circular fillet left
@@ -108,22 +106,22 @@ function SVAInit(DP::DrivePOMDP, StsArray::Vector{Sts})
 end
 
 function PlotSVA!(Plts::NTuple{3, Plots.Plot{Plots.GRBackend}}, DP::DrivePOMDP, Step::Int64, StPair::NTuple{2, CarSt}, AvecPair::NTuple{2, Vector{Float64}}) # should plot standalone and the returned plt should be used as subplot
-    plot!(Plts[1], [(Step-1)*DP.Δt, Step*DP.Δt], [StPair[1].s, StPair[2].s], c=:blue)
-    plot!(Plts[2], [(Step-1)*DP.Δt, Step*DP.Δt], [StPair[1].v, StPair[2].v], c=:green)
+    plot!(Plts[1], [(Step-1)*DP.Δt, Step*DP.Δt], [StPair[1].s, StPair[2].s], c=:black)
+    plot!(Plts[2], [(Step-1)*DP.Δt, Step*DP.Δt], [StPair[1].v, StPair[2].v], c=:black)
     #plot!(Plts[3], [(Step-1)*DP.Δt, (Step-1)*DP.Δt], [APair[1], APair[2]], c=:red, linestyle = :dot)
     Astep = Int64(DP.Δt/0.1)
-    for i in 1:Astep
-        if i < Astep
-            plot!(Plts[3], [(Step-1)*DP.Δt+0.1*(i-1), (Step-1)*DP.Δt+0.1*i], [AvecPair[1][i], AvecPair[1][i+1]], c=:red)
-        else
-            plot!(Plts[3], [(Step-1)*DP.Δt+0.1*(i-1), (Step-1)*DP.Δt+0.1*i], [AvecPair[1][i], AvecPair[2][1]], c=:red)
+    for i in 1:Astep+1
+        if Step > 1 && i == 1
+            plot!(Plts[3], [(Step-1)*DP.Δt+0.1*(i-1), (Step-1)*DP.Δt+0.1*(i-1)], [AvecPair[1][end], AvecPair[2][i]], c=:black)
+        elseif i >= 2
+            plot!(Plts[3], [(Step-1)*DP.Δt+0.1*(i-2), (Step-1)*DP.Δt+0.1*(i-1)], [AvecPair[2][i-1], AvecPair[2][i]], c=:black)
         end
     end
     return nothing
 end
 
 function Visualisation(DP::DrivePOMDP, StsArray::Vector{Sts}, ObsArray::Vector{CarOb}, ActVec::Vector{Symbol}, AccMat::Vector{Vector{Float64}}, halflen::Float64, gauge::Float64, θ::Float64, style::Symbol, picname::String)
-    #plot()
+    clibrary(:Plots)
     pltJunction = Junction(halflen, gauge, θ; style=style)
     pltMap = PlotRoutes(DP, pltJunction)
     DrawStopline!(pltMap, DP.Routes[DP.SsInit.Ego.r], DP.Stopline, gauge)
@@ -132,10 +130,17 @@ function Visualisation(DP::DrivePOMDP, StsArray::Vector{Sts}, ObsArray::Vector{C
 
     anim = @animate for i in 1:length(StsArray)
         if i > 1
-            plot!(pltMap, [ObsArray[i-1].x], [ObsArray[i-1].y], seriestype=:scatter, markersize = 4, c=:blue, markerstrokecolor=:green)
-            StPair = (StsArray[i-1].Ego, StsArray[i].Ego)
-            PlotSVA!(pltSVA_Ego, DP, i-1, StPair, (AccMat[i-1], AccMat[i]))
+            plot!(pltMap, [ObsArray[i-1].x], [ObsArray[i-1].y], seriestype=:scatter, markersize = 4, c=:violet, markerstrokecolor=:black)
         end
+        if i == 2
+            StPair = (StsArray[i-1].Ego, StsArray[i].Ego)
+            PlotSVA!(pltSVA_Ego, DP, i-1, StPair, (AccMat[i-1], AccMat[i-1]))
+        end
+        if i > 2
+            StPair = (StsArray[i-1].Ego, StsArray[i].Ego)
+            PlotSVA!(pltSVA_Ego, DP, i-1, StPair, (AccMat[i-2], AccMat[i-1]))
+        end
+
         if ActVec[i] == :takeover
             plot!(pltMap, State2XY(DP, StsArray[i].Ego), seriestype=:scatter, markersize = 5, c=:green, markerstrokecolor=:black)
         else

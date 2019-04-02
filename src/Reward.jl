@@ -48,9 +48,9 @@ end
 
 function R_acc(DP::DrivePOMDP, Ss::Sts, acc_ego::Float64) #
     Factor = -0.77
-    #Δa = acc_ego - DP.Routes[Ss.Ego.r].Aref[UInt16(Ss.Ego.s/DP.Δs)+1]
-    #return Factor*(Δa^2+2.3*abs(Δa))
-    return Factor*(acc_ego^2+2.3*abs(acc_ego))
+    Δa = acc_ego - DP.Routes[Ss.Ego.r].Aref[UInt16(Ss.Ego.s/DP.Δs)+1]
+    return Factor*(Δa^2+2.3*abs(Δa))
+    #return Factor*(acc_ego^2+2.3*abs(acc_ego))
 end
 
 

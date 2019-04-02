@@ -31,7 +31,7 @@ function DrivePOMDP(discount_factor::Float64, Δt::Float64, sRange::Vector{Float
      OSpace = CarOb[]
      PosVec = Point2D[]
      s0_shared = Routes[rRange[1]].Geos[1].Length
-     StdDevs = (0.1, 0.1)
+     StdDevs = (0.3, 0.3)
      rng = MersenneTwister(rand(UInt32))
      """
      avoid generating too many duplicate Positions in OSpace because of R_shared

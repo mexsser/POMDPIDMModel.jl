@@ -42,14 +42,14 @@ end
 #function main()
     Rlength = 21.0
     gauge = 4.0
-    θ = 110.0/(180/π)
+    θ = 75.0/(180/π)
     halflen = Rlength/2.0+7.0
-    style = :TJunction; Stopline = 4.0
-    #style = :Crossroad; Stopline = 10.0
+    #style = :TJunction; Stopline = 4.0
+    style = :Crossroad; Stopline = 10.0
     Smin = 2.0
 
     # init
-    DP = DPObj(style, UInt16(2), Rlength, gauge, θ, Stopline, Smin)
+    DP = DPObj(style, UInt16(3), Rlength, gauge, θ, Stopline, Smin)
     up = DiscreteUpdater{DrivePOMDP}(DP) # updater
 
     ################################################################################
@@ -80,7 +80,8 @@ end
     #policy = QMDP.solve(solver, DP)
 
     StsVec, ObsVec, BeliefVec, ActVec, AccMat = Simulator(DP, up, policy, MersenneTwister(rand(UInt32)))
-    Visualisation(DP, StsVec, ObsVec, ActVec, AccMat, halflen, gauge, θ, style, "$style.R$(DP.SsInit.Ego.r)R$(DP.SsInit.Other.r).Passive")
+    Angle = Int64(floor(θ*180/π))
+    Visualisation(DP, StsVec, ObsVec, ActVec, AccMat, halflen, gauge, θ, style, "$style.R$(DP.SsInit.Ego.r)R$(DP.SsInit.Other.r).$Angle.Passive")
 
 #end
 
