@@ -56,8 +56,13 @@ end
 
 function Reward(DP::DrivePOMDP, Ss::Sts, Aego::Symbol, Ssnext::Sts)
     acc_ego = 0.0
-    if Ssnext.Ego.s != Ss.Ego.s
-        acc_ego = (Ssnext.Ego.v^2 - Ss.Ego.v^2)/(2*(Ssnext.Ego.s - Ss.Ego.s))
+    if Ssnext.Other.s != Ss.Other.s
+        acc_k = (Ssnext.Other.v^2 - Ss.Other.v^2)/(2*(Ssnext.Other.s - Ss.Other.s))
+        Ego, Other, accs = IDMtransit(DP, Ss, Aego, acc_k)
+        if Ego.s != Ss.Ego.s
+            acc_ego = (Ego.v^2 - Ss.Ego.v^2)/(2*(Ego.s - Ss.Ego.s))
+        end
+        #acc_ego = (Ssnext.Ego.v^2 - Ss.Ego.v^2)/(2*(Ssnext.Ego.s - Ss.Ego.s))
     end
     reward = R_crash(DP, Ss, Ssnext) + R_crash(DP, Ss, acc_ego) + R_crash(DP, Ssnext, acc_ego) + R_v(DP, Ss, acc_ego) + R_acc(DP, Ss, acc_ego)
     reward = trunc(reward; digits=4)

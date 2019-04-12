@@ -159,6 +159,7 @@ function Visualisation(DP::DrivePOMDP, StsArray::Vector{Sts}, ObsArray::Vector{C
         else
             error("Unsupported Style: $style. Please choose either :Crossroad or :TJunction.")
         end
+        savefig("output/$picname.frame$i.pdf")
     end
     gif(anim, "output/$picname.gif", fps = Int(floor(1/DP.Δt)))
 end

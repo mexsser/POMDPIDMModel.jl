@@ -29,12 +29,13 @@ export
     solve,
     Simulator,
     Visualisation,
-    solve,
     stateindex,
     SSRound,
     sv_boundry!,
     IDMtransit,
-    show_DB
+    show_DB,
+    action,
+    IDMtransit
 
 include("Structs.jl")
 include("Route.jl")

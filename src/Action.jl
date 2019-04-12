@@ -28,7 +28,7 @@ function AccCalculate(DP::DrivePOMDP, Ego::CarSt, Aego::Symbol)
     Vref = DP.Routes[Ego.r].Vref[min(UInt16(floor(Ego.s/DP.Δs)+1), 21)]
     if Ego.s < DP.Stopline # strategy before stop line
         if Aego == :giveup
-            acc_ego = IDM(Vego=Ego.v, Vfront=0.0, Vref=Vref, Snet=DP.Stopline-Ego.s, T=0.3, Amax=DP.Aset.max, Bdec=DP.Aset.comfort, Smin=0.1)
+            acc_ego = IDM(Vego=Ego.v, Vfront=0.0, Vref=Vref, Snet=DP.Stopline-Ego.s, T=0.0, Amax=DP.Aset.max, Bdec=DP.Aset.comfort, Smin=0.0)
         elseif Aego == :takeover
             acc_ego = IDM(Vego=Ego.v, Vfront=Vref, Vref=Vref, Snet=Inf, T=1.0, Amax=DP.Aset.max, Bdec=DP.Aset.comfort, Smin=0.0)
         else
@@ -55,7 +55,7 @@ function AccCalculate(DP::DrivePOMDP, Ego::CarSt, Other::CarSt, Aego::Symbol, Δ
     acc_ego = 0.0
     Vref = DP.Routes[Ego.r].Vref[min(UInt16(floor(Ego.s/DP.Δs)+1), 21)]
     if Aego == :giveup # if giveup, ego car follows other car
-        acc_ego = IDM(Vego=Ego.v, Vfront=min(Vref, Other.v), Vref=Vref, Snet=Δs, T=0.8, Amax=DP.Aset.max, Bdec=DP.Aset.comfort, Smin=DP.Smin)
+        acc_ego = IDM(Vego=Ego.v, Vfront=min(Vref, Other.v), Vref=Vref, Snet=Δs, T=0.9, Amax=DP.Aset.max, Bdec=DP.Aset.comfort, Smin=DP.Smin)
     elseif Aego == :takeover # if take over, ego car drives as on free road.
         acc_ego = IDM(Vego=Ego.v, Vfront=Vref, Vref=Vref, Snet=Inf, T=1.0, Amax=DP.Aset.max, Bdec=DP.Aset.comfort, Smin=DP.Smin)
     else

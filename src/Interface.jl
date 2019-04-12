@@ -55,10 +55,13 @@ function Simulator(DP::DrivePOMDP, up::Updater, policy::Policy, rng::AbstractRNG
         push!(ActVec, Act_ego)
         #sp = rand(rng, transition(DP, s, a))
         sp_cat = transition(DP, s, Act_ego)
+
         sp_p, spi = findmax(sp_cat.probs)
         sp = sp_cat.vals[spi]
+        #sp = rand(rng, sp_cat)
         #acc_ego = (sp.Ego.v^2 - s.Ego.v^2)/(2*(sp.Ego.s - s.Ego.s))
-        accVec = IDMtransit(DP, s, Act_ego, 0.0).accs
+        acc_k = (sp.Other.v^2 - s.Other.v^2)/(2*(sp.Other.s - s.Other.s))
+        accVec = IDMtransit(DP, s, Act_ego, acc_k).accs
         push!(AccMat, accVec)
 
         r = reward(DP, s, Act_ego, sp)

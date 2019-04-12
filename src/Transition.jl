@@ -63,7 +63,7 @@ function IDMtransit(DP::DrivePOMDP, Ss::Sts, Aego::Symbol, acc_k::Float64)
     for i in 1:step+1 # update the state of EgoCar and OtherCar
         acc_ego = 0.0
         if overlap
-            if Ego.s < DP.Stopline
+            if Ego.s <= DP.Stopline
                 acc_ego = AccCalculate(DP, Ego, Aego) # only based on stopline, the state of other car is not directly used.
             else # Ego.s >= DP.Stopline
                 if Aego == :giveup
@@ -90,8 +90,10 @@ function IDMtransit(DP::DrivePOMDP, Ss::Sts, Aego::Symbol, acc_k::Float64)
         #@show acc_ego
         if i <= step
             sv_next!(Ego, acc_ego, 0.1)
+            Ego.s = round(Ego.s, 1e-13)
             sv_boundry!(DP, Ego)
             sv_next!(Other, acc_k, 0.1)
+            Other.s = round(Other.s, 1e-13)
             sv_boundry!(DP, Other)
         end
         #@show Ego
